@@ -11,7 +11,7 @@ import std_srvs.srv
 client = None
 actions = []
 
-def pick(agent,target_object,arm_id=-1):
+def pick(agent,target_object,prev_act=None,arm_id=-1):
 
     #create an empty request
     goal=gtp_ros_msgs.msg.PlanGoal()
@@ -25,6 +25,13 @@ def pick(agent,target_object,arm_id=-1):
     goal.request.computeMotionPlan=True
     #do not update the world state automatically, we will do it manually
     goal.request.updateBefore=False
+    if prev_act:
+        goal.request.previousAction=prev_act.id
+    else:
+        goal.request.previousAction.taskId = -1
+        goal.request.previousAction.alternativeId = -1
+
+
 
     client.send_goal(goal)
     client.wait_for_result()
@@ -35,7 +42,7 @@ def pick(agent,target_object,arm_id=-1):
     actions.append(response)
     return response.success
 
-def place(agent,target_object,target_support=None):
+def place(agent,target_object,target_support=None,prev_act=None):
     goal=gtp_ros_msgs.msg.PlanGoal()
     #here the action to perform is a place. it is similar to the pick action, except it has an optional supplementary parameter
     goal.request.taskType="place"
@@ -44,6 +51,11 @@ def place(agent,target_object,target_support=None):
     #the support parameter is optional, is to specify where to place the object
     if target_support:
         goal.request.objects.append(gtp_ros_msgs.msg.Role(role="support",name=target_support))
+    if prev_act:
+        goal.request.previousAction=prev_act.id
+    else:
+        goal.request.previousAction.taskId = -1
+        goal.request.previousAction.alternativeId = -1
 
     goal.request.computeMotionPlan=True
     goal.request.updateBefore=False
@@ -103,7 +115,7 @@ if __name__ == "__main__":
         ok = pick("PR2_ROBOT","GREY_TAPE")
         save_scenario("/tmp/picked.sce")
     if ok:
-        ok = place("PR2_ROBOT","GREY_TAPE")
+        ok = place("PR2_ROBOT","GREY_TAPE",prev_act = actions[-1]) # pass the pick action as previous action
         save_scenario("/tmp/placed.sce")
 
     if ok:
