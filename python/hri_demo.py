@@ -57,8 +57,9 @@ def pick(agent,target_object,prev_act=None,arm_id=-1):
 def place(agent,target_object,target_support=None,prev_act=None):
     goal=gtp_ros_msgs.msg.PlanGoal()
     #here the action to perform is a place. it is similar to the pick action, except it has an optional supplementary parameter
-    goal.request.taskType="place"
+    goal.request.taskType="placeReachable"
     goal.request.agents.append(gtp_ros_msgs.msg.Role(role="mainAgent",name=agent))
+    goal.request.agents.append(gtp_ros_msgs.msg.Role(role="targetAgent",name="HERAKLES_HUMAN1"))
     goal.request.objects.append(gtp_ros_msgs.msg.Role(role="mainObject",name=target_object))
     #the support parameter is optional, is to specify where to place the object
     if target_support:
@@ -133,9 +134,9 @@ def execute_motion(action,i):
     if action.solutionParts[i].name == 'release' :
         gripper_action=True
         gripper_mode=0 #open
-    if action.solutionParts[i].name == 'escape' or action.solutionParts[i].name == 'engage' :
-        print 'special move: '+action.solutionParts[i].name
-        traj_mode = 2 # path mode
+    #if action.solutionParts[i].name == 'escape' or action.solutionParts[i].name == 'engage' :
+        #print 'special move: '+action.solutionParts[i].name
+        #traj_mode = 2 # path mode
 
     if gripper_action :
         grip_goal=pr2motion.msg.Gripper_OperateGoal()
