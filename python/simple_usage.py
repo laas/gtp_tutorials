@@ -165,7 +165,7 @@ def execute_motion(action,i):
 
 
 if __name__ == "__main__":
-    rospy.init_node('gtp_simple_usage')
+    rospy.init_node('gtp_simple_usage',anonymous=True)
     client=actionlib.SimpleActionClient('/gtp_server',gtp_ros_msgs.msg.PlanAction)
     client.wait_for_server()
 
