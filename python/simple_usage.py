@@ -40,8 +40,8 @@ def pick(agent,target_object,prev_act=None,arm_id=-1):
     if prev_act:
         goal.request.previousAction=prev_act.id
     else:
-        goal.request.previousAction.taskId = -1
-        goal.request.previousAction.alternativeId = -1
+        goal.request.previousAction.taskId = -2
+        goal.request.previousAction.alternativeId = -2
 
 
 
@@ -66,8 +66,8 @@ def place(agent,target_object,target_support=None,prev_act=None):
     if prev_act:
         goal.request.previousAction=prev_act.id
     else:
-        goal.request.previousAction.taskId = -1
-        goal.request.previousAction.alternativeId = -1
+        goal.request.previousAction.taskId = -2
+        goal.request.previousAction.alternativeId = -2
 
     goal.request.computeMotionPlan=True
     goal.request.updateBefore=False
